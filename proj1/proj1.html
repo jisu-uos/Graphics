@@ -90,7 +90,7 @@ function main() {
     // baseAngle
     const baseAngle = new THREE.Object3D();
     {
-        baseAngle.angle = 10;
+        baseAngle.angle = 20;
         baseDisc.add(baseAngle);
     }
     
@@ -107,7 +107,6 @@ function main() {
     // lowerArm
     const lowerArm = new THREE.Object3D();
     {
-        lowerArm.angle = 10;
         baseAngle.add(lowerArm);
     }
 
@@ -125,7 +124,7 @@ function main() {
      // middleAngle
      const middleAngle = new THREE.Object3D();
     {
-        middleAngle.angle = 20;
+        middleAngle.angle = 30;
         baseAngle.add(middleAngle);
     }
     
@@ -142,8 +141,7 @@ function main() {
     // upperArm
     const upperArm = new THREE.Object3D();
     {
-        upperArm.angle = 10;
-        middleAngle.add(upperArm);
+        middleAngleMesh.mesh.add(upperArm);
     }
 
     // upperArmMesh
@@ -160,7 +158,7 @@ function main() {
     const upperAngle = new THREE.Object3D();
     {
         upperAngle.angle = 20;
-        middleAngle.add(upperAngle);
+        middleAngleMesh.mesh.add(upperAngle);
     }
     
     
@@ -208,28 +206,29 @@ function main() {
         baseAngle.rotation.y = THREE.MathUtils.degToRad(baseAngle.angle);
         baseAngle.rotation.x = THREE.MathUtils.degToRad(90);
 
-        lowerArm.position.z = baseAngle.position.z - lowerArmMesh.height;
+        lowerArm.position.z = baseAngle.position.z - lowerArmMesh.height/2;
 
-        lowerArmMesh.mesh.scale.set(lowerArmMesh.radius, lowerArmMesh.radius, lowerArmMesh.height);
-                
-        middleAngle.position.z = baseAngle.position.z - lowerArmMesh.height;
-        middleAngle.rotation.y = baseAngle.rotation.y;
+        lowerArmMesh.mesh.scale.set(lowerArmMesh.radius, lowerArmMesh.radius, lowerArmMesh.height/2);
         
+        middleAngle.position.z = baseAngle.position.z - lowerArmMesh.height/2;
+
         middleAngleMesh.mesh.position.z = middleAngle.position.z;
+        middleAngleMesh.mesh.rotation.y = THREE.MathUtils.degToRad(middleAngle.angle);
 
-        upperArmMesh.mesh.scale.set(upperArmMesh.radius, upperArmMesh.radius, upperArmMesh.height);
-        upperArmMesh.mesh.position.z = middleAngle.position.z;      
-        upperArmMesh.mesh.rotation.y = middleAngleMesh.mesh.rotation.y;
-        
-        upperAngle.position.z = middleAngle.position.z;  
-        upperAngle.rotation.y = middleAngle.rotation.y;
-        
-        //upperAngleMesh.mesh.position.z = upperAngle.position.z;
+        upperArmMesh.mesh.position.z = upperArm.position.z-upperArmMesh.height/2;
 
-        lightHeadMesh.mesh.rotation.z -= THREE.MathUtils.degToRad(90);   
-        lightHeadMesh.mesh.position.x = upperAngle.position.x -= lightHeadMesh.height/2; 
+        upperArmMesh.mesh.scale.set(upperArmMesh.radius, upperArmMesh.radius, upperArmMesh.height/2);  
+        upperArmMesh.mesh.rotation.z = middleAngleMesh.mesh.rotation.z;
+        
+        upperAngle.position.z = middleAngleMesh.mesh.position.z;  
+        
+        upperAngleMesh.mesh.position.z = upperAngle.position.z-(upperArmMesh.height-2);
+        upperAngleMesh.mesh.rotation.y = THREE.MathUtils.degToRad(upperAngle.angle);
+
+        //lightHeadMesh.mesh.rotation.z -= THREE.MathUtils.degToRad(90);   
+        lightHeadMesh.mesh.position.x = 10// -= lightHeadMesh.height/2; 
          
-        lightBulbMesh.mesh.position.x -= lightHeadMesh.height; 
+        lightBulbMesh.mesh.position.x = 10; 
 
     }
     
