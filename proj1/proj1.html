@@ -124,7 +124,7 @@ function main() {
      // middleAngle
      const middleAngle = new THREE.Object3D();
     {
-        middleAngle.angle = 30;
+        middleAngle.angle = -30;
         baseAngle.add(middleAngle);
     }
     
@@ -179,18 +179,18 @@ function main() {
                                 new THREE.CylinderBufferGeometry(lightHeadMesh.rTop,
                                 lightHeadMesh.rBottom, lightHeadMesh.height, lightHeadMesh.segs),
                                 new THREE.MeshPhongMaterial({color: lightHeadMesh.color}));
-        upperAngle.add(lightHeadMesh.mesh);
+        upperAngleMesh.mesh.add(lightHeadMesh.mesh);
     }
 
     
     // lightBulbMesh
-    const lightBulbMesh = {radius:0.5, color:'white', detail:1};
+    const lightBulbMesh = {radius:0.7, color:'white', detail:1};
     {
         lightBulbMesh.mesh = new THREE.Mesh( 
                                 new THREE.DodecahedronBufferGeometry(lightBulbMesh.radius,
                                 lightBulbMesh.detail),
                                 new THREE.MeshPhongMaterial({color: lightBulbMesh.color}));
-        upperAngle.add(lightBulbMesh.mesh);
+        upperAngleMesh.mesh.add(lightBulbMesh.mesh);
     }
  
     function updateLuxo() {
@@ -214,24 +214,27 @@ function main() {
 
         middleAngleMesh.mesh.position.z = middleAngle.position.z;
         middleAngleMesh.mesh.rotation.y = THREE.MathUtils.degToRad(middleAngle.angle);
-
-        upperArmMesh.mesh.position.z = upperArm.position.z-upperArmMesh.height/2;
-
+        
         upperArmMesh.mesh.scale.set(upperArmMesh.radius, upperArmMesh.radius, upperArmMesh.height/2);  
+       
+        upperArmMesh.mesh.position.z = upperArm.position.z-upperArmMesh.height/2;
         upperArmMesh.mesh.rotation.z = middleAngleMesh.mesh.rotation.z;
-        
-        upperAngle.position.z = middleAngleMesh.mesh.position.z;  
-        
-        upperAngleMesh.mesh.position.z = upperAngle.position.z-(upperArmMesh.height-2);
+                
+        upperAngleMesh.mesh.position.z = upperAngle.position.z-(upperArmMesh.height);
         upperAngleMesh.mesh.rotation.y = THREE.MathUtils.degToRad(upperAngle.angle);
 
-        //lightHeadMesh.mesh.rotation.z -= THREE.MathUtils.degToRad(90);   
-        lightHeadMesh.mesh.position.x = 10// -= lightHeadMesh.height/2; 
-         
-        lightBulbMesh.mesh.position.x = 10; 
+        lightHeadMesh.mesh.rotation.z = -THREE.MathUtils.degToRad(90);   
+
+        lightHeadMesh.mesh.position.x = upperAngleMesh.mesh.position.x-lightHeadMesh.height/2; 
+        lightBulbMesh.mesh.position.x = upperAngleMesh.mesh.position.x-lightHeadMesh.height;
+        
 
     }
-    
+
+   
+
+  
+
     updateLuxo();
 
     {
@@ -260,7 +263,10 @@ function main() {
 
         let folder4;
         folder4 = gui.addFolder('light bulb');
-        folder4.add(base.position, 'x', -room.width/2, room.width/2, 1).name('angle').onChange(updateLuxo);
+        //folder4.add(splight,'angle',10,90,1).name('angle').onChange(updateLuxo);        
+        //folder4.add(new DegRadHelper(splight, 'angle'), 'value', 10, 90).name('angle').onChange(updateLuxo);
+        //gui.add(new DegRadHelper(splight, 'angle'), 'value', 0, 90).name('angle').onChange(updateLuxo);
+        
         folder4.add(base.position, 'z', -room.width/2, room.width/2, 1).name('show helper').onChange(updateLuxo);
         folder4.open();
     }
@@ -280,8 +286,20 @@ function main() {
         const light = new THREE.AmbientLight('white', 0.3);
         scene.add(light);
     }
+    const splight = {color:0xFFFFFF, intensity:1, light:1, angle:3};
+    {   // spot light
+        //const light = new THREE.SpotLight(color, intensity);
+        //light.position.set(0, 10, 0);
+        //light.target.position.set(-5, 0, 0);
+        //scene.add(light);
+        //scene.add(light.target);
+        //const helper = new THREE.SpotLightHelper(light);
+        //scene.add(helper);
+    }
 
 
+
+    
     const fov = 45;
     const aspect = 2;  // the canvas default
     const near = 0.1;
