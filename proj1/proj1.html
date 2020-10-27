@@ -223,8 +223,8 @@ function main() {
         );
         heartMesh.mesh.position.set(5,15,-10);
         heartMesh.mesh.rotation.x = THREE.MathUtils.degToRad(180);
-        heartMesh.castShadow = true;
-        heartMesh.receiveShadow = true;
+        heartMesh.mesh.castShadow = true;
+        heartMesh.mesh.receiveShadow = true;
         scene.add(heartMesh.mesh);        
     }
     
@@ -256,8 +256,8 @@ function main() {
         );
         paramMesh.mesh.position.set(-7,7,-7);
         paramMesh.mesh.rotation.x = THREE.MathUtils.degToRad(90);
-        paramMesh.castShadow = true;
-        paramMesh.receiveShadow = true;
+        paramMesh.mesh.castShadow = true;
+        paramMesh.mesh.receiveShadow = true;
         scene.add(paramMesh.mesh);
     }
     
@@ -273,8 +273,8 @@ function main() {
             new THREE.MeshPhongMaterial({color: torusMesh.color})
         );
         torusMesh.mesh.position.set(-7,7,7);
-        torusMesh.castShadow = true;
-        torusMesh.receiveShadow = true;
+        torusMesh.mesh.castShadow = true;
+        torusMesh.mesh.receiveShadow = true;
         scene.add(torusMesh.mesh);
     }
 
@@ -291,8 +291,8 @@ function main() {
             new THREE.MeshPhongMaterial({color: tubeMesh.color})
         );
         tubeMesh.mesh.position.set(7,7,7);
-        tubeMesh.castShadow = true;
-        tubeMesh.receiveShadow = true;
+        tubeMesh.mesh.castShadow = true;
+        tubeMesh.mesh.receiveShadow = true;
         scene.add(tubeMesh.mesh);    
     }            
  
@@ -426,7 +426,6 @@ function main() {
     }
     
     function render() {
-    
         if (resizeRendererToDisplaySize(renderer)) {
           const canvas = renderer.domElement;
           camera.aspect = canvas.clientWidth / canvas.clientHeight;
