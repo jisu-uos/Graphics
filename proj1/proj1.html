@@ -184,7 +184,7 @@ function main() {
 
     
     // lightBulbMesh
-    const lightBulbMesh = {radius:0.7, color:'white', detail:1};
+    const lightBulbMesh = {radius:0.7, color:'yellow', detail:1};
     {
         lightBulbMesh.mesh = new THREE.Mesh( 
                                 new THREE.DodecahedronBufferGeometry(lightBulbMesh.radius,
@@ -193,7 +193,40 @@ function main() {
         upperAngleMesh.mesh.add(lightBulbMesh.mesh);
     }
  
-    function updateLuxo() {
+    {   // point light
+        const color = 0xFFFFFF;
+        const intensity = 0.5;
+        const light = new THREE.PointLight(color, intensity);
+        light.position.set(0, room.height, 0);
+        scene.add(light);
+        
+        const helper = new THREE.PointLightHelper(light);
+        scene.add(helper);
+    }
+    {   // an ambient light
+        const light = new THREE.AmbientLight('white', 0.3);
+        scene.add(light);
+    }
+    const lightMesh = {color:'0xFFFFFF',intensity:1,angle:40,show:false};
+    {   // spot light
+        var splight = new THREE.SpotLight(lightMesh.color,lightMesh.intensity);
+        splight.position.set(lightBulbMesh.mesh.position.x, lightBulbMesh.mesh.position.y, lightBulbMesh.mesh.position.z);
+        splight.target.position.set(lightBulbMesh.mesh.position.x-lightHeadMesh.height, lightBulbMesh.mesh.position.y, lightBulbMesh.mesh.position.z);
+        splight.angle = THREE.MathUtils.degToRad(lightMesh.angle);
+        lightBulbMesh.mesh.add(splight);
+        lightBulbMesh.mesh.add(splight.target);
+        var sphelper = new THREE.SpotLightHelper(splight,'gold');
+        sphelper.update();
+        scene.add(sphelper);
+    }
+
+    var manager = new THREE.LoadingManager();
+    //loader.load( 'path/to/model.glb', function ( gltf ) {
+    //    scene.add( gltf.scene );
+    //});
+
+    
+    function updateLuxo(show) {
         base.position.y = baseMesh.height/2;
         baseMesh.mesh.scale.set(baseMesh.width, baseMesh.height, baseMesh.width);
 
@@ -228,13 +261,12 @@ function main() {
         lightHeadMesh.mesh.position.x = upperAngleMesh.mesh.position.x-lightHeadMesh.height/2; 
         lightBulbMesh.mesh.position.x = upperAngleMesh.mesh.position.x-lightHeadMesh.height;
         
+        splight.target.position.set(lightBulbMesh.mesh.position.x-lightHeadMesh.height, lightBulbMesh.mesh.position.y, lightBulbMesh.mesh.position.z);
+        splight.angle = THREE.MathUtils.degToRad(lightMesh.angle);
+        sphelper.update();
+        if(lightMesh.show) scene.add(sphelper); else scene.remove(sphelper);
 
     }
-
-   
-
-  
-
     updateLuxo();
 
     {
@@ -263,43 +295,13 @@ function main() {
 
         let folder4;
         folder4 = gui.addFolder('light bulb');
-        //folder4.add(splight,'angle',10,90,1).name('angle').onChange(updateLuxo);        
-        //folder4.add(new DegRadHelper(splight, 'angle'), 'value', 10, 90).name('angle').onChange(updateLuxo);
-        //gui.add(new DegRadHelper(splight, 'angle'), 'value', 0, 90).name('angle').onChange(updateLuxo);
-        
-        folder4.add(base.position, 'z', -room.width/2, room.width/2, 1).name('show helper').onChange(updateLuxo);
+        folder4.add(lightMesh,'angle',10,90,1).name('angle').onChange(updateLuxo);    
+        //folder4.add(base.position, 'z', -room.width/2, room.width/2, 1).name('show helper').onChange(updateLuxo);
+        folder4.add(lightMesh,'show').name('show helper').onChange(updateLuxo);
         folder4.open();
     }
-
-
-    {   // point light
-        const color = 0xFFFFFF;
-        const intensity = 0.5;
-        const light = new THREE.PointLight(color, intensity);
-        light.position.set(0, room.height, 0);
-        scene.add(light);
-        
-        const helper = new THREE.PointLightHelper(light);
-        scene.add(helper);
-    }
-    {   // an ambient light
-        const light = new THREE.AmbientLight('white', 0.3);
-        scene.add(light);
-    }
-    const splight = {color:0xFFFFFF, intensity:1, light:1, angle:3};
-    {   // spot light
-        //const light = new THREE.SpotLight(color, intensity);
-        //light.position.set(0, 10, 0);
-        //light.target.position.set(-5, 0, 0);
-        //scene.add(light);
-        //scene.add(light.target);
-        //const helper = new THREE.SpotLightHelper(light);
-        //scene.add(helper);
-    }
-
-
-
-    
+ 
+   
     const fov = 45;
     const aspect = 2;  // the canvas default
     const near = 0.1;
@@ -336,6 +338,9 @@ function main() {
     }
     
     requestAnimationFrame(render);
+
+  
+
 }
 
 main();
